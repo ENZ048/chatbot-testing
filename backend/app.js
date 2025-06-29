@@ -3,7 +3,15 @@ const cors = require("cors");
 const app = express();
 const path = require("path");
 
-app.use(cors({ origin: "http://localhost:5173" })); 
+app.use(cors({
+  origin: [
+    "http://localhost:5173",                        // local admin panel
+    "https://your-admin.vercel.app",                // admin dashboard (vercel)
+    "https://your-chatbot.vercel.app",              // chatbot widget
+    "https://your-client-site.com"                  // client websites (optional)
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 const authRoutes = require("./routes/authRoutes");
