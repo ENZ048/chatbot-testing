@@ -9,7 +9,8 @@ app.use(cors({
     "http://localhost:5173",                        // local admin panel
     "https://chatbot-testing-beta.vercel.app",                // admin dashboard (vercel)
     "https://chatbot-testing-7m25.vercel.app",              // chatbot widget
-    "https://chatbot-testing-wqxk.onrender.com"                  // client websites (optional)
+    "https://chatbot-testing-wqxk.onrender.com",               // client websites (optional)
+    "https://chatbot-demo-livid.vercel.app",  // demo chatbot
   ],
   credentials: true
 }));
