@@ -17,7 +17,7 @@ const Chat = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://chatbot-testing-wqxk.onrender.com/api/chat/686113d2e5f92254f1ef7077", {
+      const res = await axios.post("http://localhost:5000/api/chat/686113d2e5f92254f1ef7077", {
         message: input,
       });
 
