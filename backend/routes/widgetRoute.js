@@ -3,6 +3,8 @@ const router = express.Router();
 
 router.get("/:chatbotId.js", (req, res) => {
   const chatbotId = req.params.chatbotId;
+  console.log("BASE_URL:", process.env.BASE_URL);
+
   const widgetUrl = `${process.env.BASE_URL}/widget/chat-widget.html?chatbotId=${chatbotId}`;
 
   const js = `
