@@ -6,7 +6,7 @@ const path = require("path");
 app.use(cors({
   origin: [
     "http://localhost:5173",                        // local admin panel
-    "https://your-admin.vercel.app",                // admin dashboard (vercel)
+    "https://chatbot-testing-beta.vercel.app/",                // admin dashboard (vercel)
     "https://your-chatbot.vercel.app",              // chatbot widget
     "https://your-client-site.com"                  // client websites (optional)
   ],
