@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const path = require("path");
 
+// ✅ 1. Serve the JS file
 router.get("/:chatbotId.js", (req, res) => {
   const chatbotId = req.params.chatbotId;
-  console.log("BASE_URL:", process.env.BASE_URL);
-
   const widgetUrl = `${process.env.BASE_URL}/widget/chat-widget.html?chatbotId=${chatbotId}`;
 
   const js = `
@@ -58,5 +58,12 @@ router.get("/:chatbotId.js", (req, res) => {
   res.send(js);
 });
 
+// ✅ 2. Serve the chat-widget HTML page dynamically
+router.get("/chat-widget.html", (req, res) => {
+  const chatbotId = req.query.chatbotId;
+  if (!chatbotId) return res.status(400).send("Missing chatbotId");
+
+  res.render("chat-widget", { chatbotId });
+});
 
 module.exports = router;
