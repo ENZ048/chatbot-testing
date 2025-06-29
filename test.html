@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot Test</title>
+    <style>
+      iframe {
+        width: 400px;
+        border: none;
+        transition: height 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe id="chatbotFrame" src="http://localhost:5173/widget/6860f48552024892bc2cf89d" height="600px"></iframe>
+
+    <script>
+      window.addEventListener("message", (event) => {
+        if (event.data?.type === "resize-iframe") {
+          const frame = document.getElementById("chatbotFrame");
+          if (frame) frame.style.height = event.data.height + "px";
+        }
+      });
+    </script>
+  </body>
+</html>
