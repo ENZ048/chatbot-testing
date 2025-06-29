@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat Widget</title>
+  <style>
+    /* Reset and basic styling */
+    html, body, #root {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #1f2937;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React and ReactDOM from CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Your compiled React chat widget bundle -->
+  <script type="module" src="./widget-loader.js"></script>
+</body>
+</html>
