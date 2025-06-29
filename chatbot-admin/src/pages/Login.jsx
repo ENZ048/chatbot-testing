@@ -19,7 +19,7 @@ const Login = () => {
       localStorage.setItem("token", res.data.token);
       navigate("/clients");
     } catch (err) {
-      alert("❌ Login failed. Check credentials.");
+      alert("❌ Login failed. Check credentials.", err);
     }
   };
 
