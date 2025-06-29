@@ -7,8 +7,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173",                        // local admin panel
     "https://chatbot-testing-beta.vercel.app",                // admin dashboard (vercel)
-    "https://your-chatbot.vercel.app",              // chatbot widget
-    "https://your-client-site.com"                  // client websites (optional)
+    "https://chatbot-testing-7m25.vercel.app",              // chatbot widget
+    "https://chatbot-testing-wqxk.onrender.com"                  // client websites (optional)
   ],
   credentials: true
 }));
