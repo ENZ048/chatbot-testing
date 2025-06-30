@@ -1,4 +1,5 @@
 const Chatbot = require("../models/Chatbot");
+const Message = require("../models/Message");
 require("dotenv").config();
 const { GoogleGenAI } = require("@google/genai");
 
@@ -12,13 +13,24 @@ exports.askChatbot = async (req, res) => {
     const { chatbotId } = req.params;
 
     const chatbot = await Chatbot.findById(chatbotId);
-    if (!chatbot) {
-      return res.status(404).json({ message: "Chatbot not found" });
-    }
+    if (!chatbot) return res.status(404).json({ message: "Chatbot not found" });
 
     const context = chatbot.dataText || "";
 
-    const contents = `
+    // Save user message
+    await Message.create({
+      chatbotId,
+      role: "user",
+      content: message,
+    });
+
+    // OpenAI or mock response
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: `
 You are a helpful, friendly customer support chatbot for a business website.
 
 Your goals:
@@ -30,22 +42,25 @@ Your goals:
 
 Business info (optional):
 ${context}
-
-User question: ${message}
-    `.trim();
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents,
+          `.trim(),
+        },
+        { role: "user", content: message },
+      ],
     });
 
-    // ✅ Properly extract text from structured response
-    const reply = response.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+    const reply = response.choices[0].message.content;
+
+    // Save bot reply
+    await Message.create({
+      chatbotId,
+      role: "bot",
+      content: reply,
+    });
 
     res.json({ reply });
   } catch (err) {
     console.error("Chat error:", err);
-    res.status(500).json({ message: "Chat failed", error: err.message });
+    res.status(500).json({ message: "Chat failed" });
   }
 };
 

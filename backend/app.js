@@ -42,6 +42,9 @@ app.use("/widget", widgetRoute);
 
 app.use("/widget", express.static(path.join(__dirname, "public/widget")));
 
+app.use("/api/scrape", require("./routes/scrapeRoutes"));
+
+
 app.get("/", (req, res) => {
   res.send("Chatbot backend is running!");
 });
