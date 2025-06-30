@@ -2,12 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { marked } from "marked";
 
-const API_BASE = window.ChatbotConfig?.apiBase || "https://chatbot-testing-wqxk.onrender.com/api/chat";
-const CHATBOT_ID = window.ChatbotConfig?.chatbotId || "686113d2e5f92254f1ef7077";
-const CLIENT_ID = window.ChatbotConfig?.clientId || "68610e8a195cad5603a04edc";
+const API_BASE = "https://chatbot-testing-wqxk.onrender.com/api/chat";
 
+const CHATBOT_ID = "686113d2e5f92254f1ef7077";
+const CLIENT_ID = "68610e8a195cad5603a04edc";
 
-export default function ChatModal({ onClose }) {
+export default function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [botName, setBotName] = useState("Chatbot");
@@ -15,6 +16,7 @@ export default function ChatModal({ onClose }) {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
+    if (!isOpen) return;
     axios
       .get(`${API_BASE}/client/${CLIENT_ID}`)
       .then((res) => {
@@ -26,7 +28,7 @@ export default function ChatModal({ onClose }) {
           err.response?.data || err.message
         );
       });
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,7 +94,6 @@ export default function ChatModal({ onClose }) {
           .
         </span>
 
-        {/* CSS Animations */}
         <style>{`
           @keyframes dot1 {
             0%, 80%, 100% { opacity: 0; }
@@ -111,6 +112,45 @@ export default function ChatModal({ onClose }) {
     );
   }
 
+  if (!isOpen) {
+    // Render floating bubble when closed
+    return (
+      <div
+        onClick={() => setIsOpen(true)}
+        aria-label="Open chat"
+        title="Open chat"
+        style={{
+          position: "fixed",
+          bottom: 24,
+          right: 24,
+          backgroundColor: "#4338ca",
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          boxShadow: "0 4px 12px rgba(67, 56, 202, 0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          color: "white",
+          fontSize: 28,
+          userSelect: "none",
+          zIndex: 9999,
+          transition: "background-color 0.3s ease",
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#3730a3")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "#4338ca")
+        }
+      >
+        🤖
+      </div>
+    );
+  }
+
+  // Render modal when open
   return (
     <div
       style={{
@@ -119,7 +159,7 @@ export default function ChatModal({ onClose }) {
         bottom: 24,
         right: 24,
         width: 320,
-        height: 560, // fixed height
+        height: 560,
         backgroundColor: "#fff",
         boxShadow:
           "0 8px 20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08)",
@@ -163,7 +203,7 @@ export default function ChatModal({ onClose }) {
         </div>
 
         <button
-          onClick={onClose}
+          onClick={() => setIsOpen(false)}
           aria-label="Close chat"
           style={{
             background: "transparent",
@@ -207,75 +247,75 @@ export default function ChatModal({ onClose }) {
           </p>
         )}
 
-       {messages.map((msg, idx) => {
-  const isUser = msg.from === "user";
+        {messages.map((msg, idx) => {
+          const isUser = msg.from === "user";
 
-  return (
-    <div
-      key={idx}
-      style={{
-        display: "flex",
-        justifyContent: isUser ? "flex-end" : "flex-start",
-        marginBottom: 12,
-        alignItems: "flex-end",
-      }}
-      aria-live="polite"
-    >
-      {/* Render order depends on user or bot */}
-      {!isUser && (
-        <div
-          style={{
-            fontSize: 20,
-            marginRight: 10,
-            userSelect: "none",
-          }}
-          aria-label="Bot avatar"
-        >
-          🤖
-        </div>
-      )}
+          return (
+            <div
+              key={idx}
+              style={{
+                display: "flex",
+                justifyContent: isUser ? "flex-end" : "flex-start",
+                marginBottom: 12,
+                alignItems: "flex-end",
+              }}
+              aria-live="polite"
+            >
+              {!isUser && (
+                <div
+                  style={{
+                    fontSize: 20,
+                    marginRight: 10,
+                    userSelect: "none",
+                  }}
+                  aria-label="Bot avatar"
+                >
+                  🤖
+                </div>
+              )}
 
-      <div
-        style={{
-          backgroundColor: isUser ? "#4338ca" : "#e0e7ff",
-          color: isUser ? "white" : "#3730a3",
-          padding: "10px 16px",
-          borderRadius: 20,
-          maxWidth: "80%",
-          fontSize: 14,
-          lineHeight: 1.4,
-          boxShadow: isUser
-            ? "0 4px 12px rgba(67, 56, 202, 0.3)"
-            : "0 2px 8px rgba(224, 231, 255, 0.5)",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          overflowWrap: "break-word",
-          display: "inline-block",
-        }}
-      >
-        {isUser ? (
-          msg.text
-        ) : (
-          <div dangerouslySetInnerHTML={{ __html: marked.parse(msg.text) }} />
-        )}
-      </div>
+              <div
+                style={{
+                  backgroundColor: isUser ? "#4338ca" : "#e0e7ff",
+                  color: isUser ? "white" : "#3730a3",
+                  padding: "10px 16px",
+                  borderRadius: 20,
+                  maxWidth: "80%",
+                  fontSize: 14,
+                  lineHeight: 1.4,
+                  boxShadow: isUser
+                    ? "0 4px 12px rgba(67, 56, 202, 0.3)"
+                    : "0 2px 8px rgba(224, 231, 255, 0.5)",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                  display: "inline-block",
+                }}
+              >
+                {isUser ? (
+                  msg.text
+                ) : (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: marked.parse(msg.text) }}
+                  />
+                )}
+              </div>
 
-      {isUser && (
-        <div
-          style={{
-            fontSize: 20,
-            marginLeft: 10,
-            userSelect: "none",
-          }}
-          aria-label="User avatar"
-        >
-          🧑
-        </div>
-      )}
-    </div>
-  );
-})}
-
+              {isUser && (
+                <div
+                  style={{
+                    fontSize: 20,
+                    marginLeft: 10,
+                    userSelect: "none",
+                  }}
+                  aria-label="User avatar"
+                >
+                  🧑
+                </div>
+              )}
+            </div>
+          );
+        })}
 
         {/* Loading indicator */}
         {loading && (
@@ -294,7 +334,7 @@ export default function ChatModal({ onClose }) {
                 borderRadius: 20,
                 maxWidth: "80%",
                 fontSize: 14,
-                fontWeight: "600",
+                fontWeight: 600,
                 boxShadow: "0 2px 8px rgba(224, 231, 255, 0.5)",
                 userSelect: "none",
                 display: "flex",
@@ -349,86 +389,23 @@ export default function ChatModal({ onClose }) {
           aria-label="Send message"
           disabled={!input.trim() || loading}
           style={{
-            backgroundColor: input.trim() && !loading ? "#4338ca" : "#a5b4fc",
+            backgroundColor: input.trim() && !loading ? "#4338ca" : "#e0e7ff",
             border: "none",
             borderRadius: "50%",
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
             cursor: input.trim() && !loading ? "pointer" : "not-allowed",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "white",
+            fontSize: 20, // size for emoji
+            color: input.trim() && !loading ? "white" : "#4338ca",
             transition: "background-color 0.3s ease",
           }}
-          onMouseEnter={(e) => {
-            if (input.trim() && !loading)
-              e.currentTarget.style.backgroundColor = "#3730a3";
-          }}
-          onMouseLeave={(e) => {
-            if (input.trim() && !loading)
-              e.currentTarget.style.backgroundColor = "#4338ca";
-          }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-          >
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
+          🚀
         </button>
       </footer>
     </div>
-  );
-}
-
-function LoadingDots() {
-  return (
-    <span
-      aria-label="loading"
-      role="img"
-      style={{
-        display: "inline-block",
-        fontWeight: "bold",
-        fontSize: 18,
-        letterSpacing: 4,
-        color: "#4f46e5",
-        userSelect: "none",
-        width: 40,
-      }}
-    >
-      <span style={{ animation: "dot1 1.4s infinite ease-in-out both" }}>
-        .
-      </span>
-      <span style={{ animation: "dot2 1.4s infinite ease-in-out both" }}>
-        .
-      </span>
-      <span style={{ animation: "dot3 1.4s infinite ease-in-out both" }}>
-        .
-      </span>
-
-      <style>{`
-        @keyframes dot1 {
-          0%, 80%, 100% { opacity: 0; }
-          40% { opacity: 1; }
-        }
-        @keyframes dot2 {
-          0%, 100% { opacity: 0; }
-          50% { opacity: 1; }
-        }
-        @keyframes dot3 {
-          0%, 20%, 100% { opacity: 0; }
-          60% { opacity: 1; }
-        }
-      `}</style>
-    </span>
   );
 }
