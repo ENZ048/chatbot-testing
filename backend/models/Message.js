@@ -6,15 +6,8 @@ const messageSchema = new mongoose.Schema({
     ref: "Chatbot",
     required: true,
   },
-  role: {
-    type: String,
-    enum: ["user", "bot"],
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
+  userMessage: String,
+  botReply: String,
   timestamp: {
     type: Date,
     default: Date.now,

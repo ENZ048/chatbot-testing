@@ -13,24 +13,13 @@ exports.askChatbot = async (req, res) => {
     const { chatbotId } = req.params;
 
     const chatbot = await Chatbot.findById(chatbotId);
-    if (!chatbot) return res.status(404).json({ message: "Chatbot not found" });
+    if (!chatbot) {
+      return res.status(404).json({ message: "Chatbot not found" });
+    }
 
     const context = chatbot.dataText || "";
 
-    // Save user message
-    await Message.create({
-      chatbotId,
-      role: "user",
-      content: message,
-    });
-
-    // OpenAI or mock response
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: `
+    const prompt = `
 You are a helpful, friendly customer support chatbot for a business website.
 
 Your goals:
@@ -42,25 +31,29 @@ Your goals:
 
 Business info (optional):
 ${context}
-          `.trim(),
-        },
-        { role: "user", content: message },
-      ],
+
+User question: ${message}
+    `.trim();
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
     });
 
-    const reply = response.choices[0].message.content;
+    const reply = response.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
 
-    // Save bot reply
-    await Message.create({
+    // ✅ Save both user and bot messages in MongoDB
+    const saved = await Message.create({
       chatbotId,
-      role: "bot",
-      content: reply,
+      userMessage: message,
+      botReply: reply,
+      timestamp: new Date(),
     });
 
     res.json({ reply });
   } catch (err) {
     console.error("Chat error:", err);
-    res.status(500).json({ message: "Chat failed" });
+    res.status(500).json({ message: "Chat failed", error: err.message });
   }
 };
 
