@@ -12,7 +12,7 @@ app.use(cors({
     "https://chatbot-testing-wqxk.onrender.com",               // client websites (optional)
     "https://chatbot-demo-livid.vercel.app",  // demo chatbot
     "https://troikatech.ai", //test
-    "https://troikaai.com/classes/" //troikaAI/classes
+    "https://troikaai.com" //troikaAI/classes
   ],
   credentials: true
 }));
