@@ -11,7 +11,8 @@ app.use(cors({
     "https://chatbot-testing-7m25.vercel.app",              // chatbot widget
     "https://chatbot-testing-wqxk.onrender.com",               // client websites (optional)
     "https://chatbot-demo-livid.vercel.app",  // demo chatbot
-    "https://troikatech.ai" //test
+    "https://troikatech.ai", //test
+    "https://troikaai.com/classes/" //troikaAI/classes
   ],
   credentials: true
 }));
